@@ -2,969 +2,976 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sistemas Operativos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad: Sistemas Operativos</title>
 <style>
-/* ─── RESET & BASE ─── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg:     #0a1628;
+    --mid:    #0d2137;
+    --card:   #112840;
+    --cyan:   #00c8ff;
+    --green:  #00e5a0;
+    --orange: #ff7a35;
+    --purple: #bb86fc;
+    --white:  #ffffff;
+    --offW:   #c8d8e8;
+    --gray:   #7a9bb5;
+  }
 
-:root {
-  --bg:     #080f1e;
-  --mid:    #0d1a2e;
-  --card:   #101f35;
-  --card2:  #0c1828;
-  --cyan:   #00d4ff;
-  --green:  #00f0a0;
-  --orange: #ff7a35;
-  --purple: #c084fc;
-  --yellow: #ffd166;
-  --white:  #f0f6ff;
-  --gray:   #6b8aaa;
-  --dim:    #1a2d42;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    min-height: 100vh;
+  }
 
-/* ─── SLIDE CONTAINER ─── */
-#slides {
-  width: 100%;
-  height: 100dvh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-#slides::-webkit-scrollbar { display: none; }
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: block; }
 
-/* ─── EACH SLIDE ─── */
-.slide {
-  width: 100%;
-  height: 100dvh;
-  min-height: 100dvh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  padding: 0;
-}
+  /* ── HEADER ── */
+  .header {
+    background: var(--mid);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-title { flex: 1; }
+  .header-title .eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--gray); margin-bottom: 3px; }
+  .header-title h1, .header-title h2 { font-size: 20px; font-weight: 700; margin: 0; }
+  .header-title p  { font-size: 13px; color: var(--cyan); margin-top: 4px; }
+  .header-cyan  { border-bottom: 3px solid var(--cyan); }
+  .header-green { border-bottom: 3px solid var(--green); }
+  .header-purple{ border-bottom: 3px solid var(--purple); }
 
-/* ─── PROGRESS BAR ─── */
-#progress-bar {
-  position: fixed;
-  top: 0; left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--cyan), var(--green));
-  transition: width .35s ease;
-  z-index: 100;
-  border-radius: 0 2px 2px 0;
-}
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 9px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    background: var(--card);
+    color: var(--gray);
+    transition: all .18s;
+    white-space: nowrap;
+  }
+  .btn:hover { filter: brightness(1.15); }
+  .btn-cyan   { background: var(--cyan);   color: var(--bg); }
+  .btn-green  { background: var(--green);  color: var(--bg); }
+  .btn-purple { background: var(--purple); color: var(--bg); }
+  .btn-outline-purple { border: 1px solid rgba(187,134,252,.45); color: var(--purple); }
+  .btn-outline-cyan   { border: 1px solid rgba(0,200,255,.35);   color: var(--cyan);   }
+  .btn-filter { padding: 9px 14px; }
+  .btn-filter.active { background: var(--cyan); color: var(--bg); }
+  .btn-full { width: 100%; padding: 13px; font-size: 14px; border-radius: 10px; margin-top: 18px; }
 
-/* ─── SLIDE COUNTER ─── */
-#counter {
-  position: fixed;
-  bottom: 18px; right: 18px;
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--gray);
-  background: rgba(8,15,30,.7);
-  padding: 4px 10px;
-  border-radius: 20px;
-  z-index: 100;
-  backdrop-filter: blur(8px);
-  letter-spacing: 1px;
-}
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { text-align: right; }
+  .progress-wrap span { font-size: 11px; color: var(--gray); display: block; margin-bottom: 3px; }
+  .progress-track { width: 120px; height: 6px; background: var(--card); border-radius: 3px; overflow: hidden; margin-left: auto; }
+  .progress-fill  { height: 100%; background: var(--cyan); border-radius: 3px; transition: width .35s; }
 
-/* ─── NAV DOTS ─── */
-#dots {
-  position: fixed;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  z-index: 100;
-}
-.dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--dim);
-  transition: all .3s;
-  cursor: pointer;
-}
-.dot.active { background: var(--cyan); transform: scale(1.6); }
+  /* ── CONTENT WRAPPER ── */
+  .content { padding: 22px 28px; max-width: 750px; margin: 0 auto; }
 
-/* ─── SLIDE INNER ─── */
-.slide-inner {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 36px 24px 56px;
-  position: relative;
-  z-index: 2;
-}
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--card);
+    border: 1px solid rgba(0,200,255,.3);
+    border-left: 4px solid var(--cyan);
+    border-radius: 8px;
+    padding: 13px 17px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--offW);
+    line-height: 1.7;
+  }
+  .info-box a { color: var(--cyan); cursor: pointer; text-decoration: none; }
+  .info-box strong { color: var(--white); }
 
-/* ─── EYEBROW ─── */
-.eyebrow {
-  font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin-bottom: 14px;
-  opacity: .7;
-}
+  /* ── FILTERS ── */
+  .filters { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .search-input {
+    flex: 1; min-width: 180px;
+    background: var(--card);
+    border: 1px solid rgba(0,200,255,.25);
+    border-radius: 8px;
+    padding: 9px 13px;
+    color: var(--white);
+    font-size: 13px;
+    outline: none;
+  }
+  .search-input::placeholder { color: var(--gray); }
+  .count-label { font-size: 12px; color: var(--gray); margin-bottom: 12px; }
 
-/* ─── SLIDE TITLE ─── */
-.slide-title {
-  font-size: clamp(28px, 8vw, 42px);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 20px;
-  letter-spacing: -0.5px;
-}
+  /* ── SO GRID ── */
+  .so-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 10px; }
+  .so-card {
+    border-radius: 10px;
+    padding: 13px 14px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    user-select: none;
+  }
+  .so-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+  .so-card.prop  { background: rgba(255,122,53,.09); border: 1px solid rgba(255,122,53,.38); }
+  .so-card.open  { background: rgba(0,229,160,.09); border: 1px solid rgba(0,229,160,.38); }
+  .so-card .so-icon { font-size: 26px; margin-bottom: 6px; }
+  .so-card .so-name { font-weight: 700; font-size: 13px; color: var(--white); margin-bottom: 2px; }
+  .so-card .so-meta { font-size: 11px; color: var(--gray); margin-bottom: 8px; }
+  .badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px;
+    padding: 2px 8px; border-radius: 20px;
+    color: var(--bg);
+  }
+  .badge-prop { background: var(--orange); }
+  .badge-open { background: var(--green);  }
 
-/* ─── BODY TEXT ─── */
-.slide-body {
-  font-size: clamp(14px, 4vw, 17px);
-  line-height: 1.7;
-  color: #a8c0d6;
-}
+  /* ── SO SELECTED CARD ── */
+  .so-selected {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px;
+    padding: 13px 17px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .so-selected .big-icon { font-size: 42px; }
+  .so-selected h3 { font-size: 17px; margin-bottom: 2px; }
+  .so-selected p  { font-size: 12px; color: var(--gray); margin-bottom: 5px; }
 
-/* ─── ACCENT LINE ─── */
-.accent-line {
-  width: 48px; height: 3px;
-  border-radius: 2px;
-  margin-bottom: 18px;
-}
+  /* ── HINT BOX ── */
+  .hint-box {
+    background: rgba(187,134,252,.1);
+    border: 1px solid rgba(187,134,252,.28);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--offW);
+    line-height: 1.6;
+  }
 
-/* ══════════════════════════════════
-   SLIDE 1 — PORTADA
-══════════════════════════════════ */
-#s1 { background: var(--bg); }
-#s1 .bg-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(0,212,255,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,212,255,.06) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-#s1 .glow-orb {
-  position: absolute;
-  width: 280px; height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,212,255,.15) 0%, transparent 70%);
-  top: -60px; right: -60px;
-  pointer-events: none;
-}
-#s1 .glow-orb2 {
-  position: absolute;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(192,132,252,.12) 0%, transparent 70%);
-  bottom: 40px; left: -40px;
-  pointer-events: none;
-}
-.cover-tag {
-  display: inline-block;
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  border: 1px solid rgba(0,212,255,.4);
-  color: var(--cyan);
-  padding: 5px 12px;
-  border-radius: 4px;
-  margin-bottom: 24px;
-}
-.cover-title {
-  font-size: clamp(38px, 11vw, 60px);
-  font-weight: 800;
-  line-height: 1.0;
-  letter-spacing: -1px;
-}
-.cover-title span { color: var(--cyan); display: block; }
-.cover-sub {
-  font-size: 15px;
-  color: var(--gray);
-  margin-top: 16px;
-  line-height: 1.6;
-}
-.cover-scroll {
-  position: absolute;
-  bottom: 28px; left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: var(--gray);
-  font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 1px;
-  animation: bounce 2s infinite;
-}
-@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
-.arrow-down { font-size: 18px; }
+  /* ── QUESTION CARDS ── */
+  .q-list { display: flex; flex-direction: column; gap: 13px; }
+  .q-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px;
+    padding: 14px 17px;
+    transition: border-color .2s;
+  }
+  .q-card.done { border-color: rgba(0,200,255,.45); }
+  .q-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; gap: 10px; }
+  .q-label { font-weight: 600; font-size: 14px; color: var(--white); }
+  .q-label.done { color: var(--cyan); }
+  .q-num {
+    background: rgba(0,200,255,.18);
+    color: var(--cyan);
+    border-radius: 20px;
+    padding: 1px 7px;
+    font-size: 11px;
+    margin-right: 7px;
+  }
+  .check-ok { color: var(--green); font-size: 13px; margin-left: 6px; }
+  .btn-help {
+    background: rgba(187,134,252,.15);
+    border: 1px solid rgba(187,134,252,.38);
+    color: var(--purple);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 12px; font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-help:hover { background: rgba(187,134,252,.28); }
 
-/* ══════════════════════════════════
-   SLIDE 2 — ¿QUÉ ES UN SO?
-══════════════════════════════════ */
-#s2 { background: var(--mid); }
-.def-box {
-  background: rgba(0,212,255,.07);
-  border: 1px solid rgba(0,212,255,.25);
-  border-left: 3px solid var(--cyan);
-  border-radius: 10px;
-  padding: 16px 18px;
-  font-size: 15px;
-  line-height: 1.75;
-  color: var(--white);
-  margin-bottom: 22px;
-}
-.bridge-row {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  margin-top: 6px;
-}
-.bridge-box {
-  flex: 1;
-  border-radius: 10px;
-  padding: 14px 10px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-}
-.bridge-box .bb-icon { font-size: 26px; margin-bottom: 6px; display: block; }
-.bridge-box .bb-label { font-size: 10px; opacity: .7; font-weight: 400; margin-top: 4px; display: block; }
-.bridge-arrow {
-  display: flex; align-items: center;
-  padding: 0 4px;
-  color: var(--gray);
-  font-size: 20px;
-}
+  .q-input, .q-select, .q-textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid rgba(0,200,255,.2);
+    border-radius: 6px;
+    padding: 9px 11px;
+    color: var(--white);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .q-input:focus, .q-select:focus, .q-textarea:focus { border-color: rgba(0,200,255,.55); }
+  .q-select option { background: var(--mid); }
+  .q-select { cursor: pointer; }
+  .q-textarea { resize: vertical; min-height: 72px; }
 
-/* ══════════════════════════════════
-   SLIDE 3 — FUNCIONES
-══════════════════════════════════ */
-#s3 { background: var(--bg); }
-.func-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 4px;
-}
-.func-card {
-  border-radius: 12px;
-  padding: 14px 13px;
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,.06);
-}
-.func-card .fc-icon { font-size: 24px; margin-bottom: 7px; display: block; }
-.func-card .fc-title { font-size: 12px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
-.func-card .fc-desc  { font-size: 11px; color: var(--gray); line-height: 1.5; }
-.func-card.span2 { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; }
-.func-card.span2 .fc-icon { margin: 0; font-size: 28px; flex-shrink: 0; }
-.func-card.span2 .fc-text { flex: 1; }
+  /* ── RESULT CARD ── */
+  .result-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); }
+  .result-header { padding: 17px 22px; border-bottom: 1px solid rgba(255,255,255,.08); display: flex; justify-content: space-between; align-items: center; }
+  .result-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--gray); margin-bottom: 3px; }
+  .result-header h3 { font-size: 21px; font-weight: 800; margin-top: 2px; }
+  .result-body { padding: 17px 22px; }
+  .result-row { border-bottom: 1px solid rgba(255,255,255,.08); padding-bottom: 11px; margin-bottom: 11px; }
+  .result-row:last-child { border-bottom: none; }
+  .result-qlabel { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .result-answer { font-size: 14px; color: var(--white); white-space: pre-wrap; line-height: 1.6; }
+  .result-answer.empty { color: rgba(122,155,181,.5); font-style: italic; }
+  .score-box { margin-top: 14px; background: var(--bg); border-radius: 8px; padding: 14px; text-align: center; }
+  .score-num { font-size: 30px; font-weight: 800; color: var(--cyan); }
+  .score-sub { font-size: 12px; color: var(--gray); margin: 3px 0 6px; }
+  .score-msg { font-size: 16px; }
 
-/* ══════════════════════════════════
-   SLIDE 4 — HISTORIA
-══════════════════════════════════ */
-#s4 { background: var(--mid); }
-.timeline { position: relative; padding-left: 26px; }
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 8px; top: 8px; bottom: 8px;
-  width: 2px;
-  background: linear-gradient(180deg, var(--cyan), var(--orange));
-  border-radius: 1px;
-}
-.tl-item { position: relative; margin-bottom: 20px; }
-.tl-item:last-child { margin-bottom: 0; }
-.tl-dot {
-  position: absolute;
-  left: -22px; top: 5px;
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  border: 2px solid var(--bg);
-}
-.tl-year {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-.tl-text { font-size: 13px; color: #8faabb; line-height: 1.55; }
+  /* ══════════════════════════════════════════
+     GUÍA GENERAL
+  ══════════════════════════════════════════ */
+  .objective-box {
+    background: rgba(0,200,255,.1);
+    border: 1px solid rgba(0,200,255,.3);
+    border-left: 4px solid var(--cyan);
+    border-radius: 10px;
+    padding: 15px 18px;
+    margin-bottom: 26px;
+  }
+  .objective-box .eyebrow { font-size: 10px; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+  .objective-box p { font-size: 15px; color: var(--white); line-height: 1.75; }
 
-/* ══════════════════════════════════
-   SLIDE 5 — TIPOS
-══════════════════════════════════ */
-#s5 { background: var(--bg); }
-.tipos-list { display: flex; flex-direction: column; gap: 9px; }
-.tipo-row {
-  background: var(--card);
-  border-radius: 10px;
-  padding: 13px 15px;
-  display: flex;
-  align-items: flex-start;
-  gap: 13px;
-  border: 1px solid rgba(255,255,255,.05);
-}
-.tipo-row .tr-icon {
-  font-size: 22px;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.tipo-row .tr-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 3px;
-}
-.tipo-row .tr-content {
-  font-size: 13px;
-  color: var(--gray);
-  line-height: 1.5;
-}
-.tipo-row .tr-content strong { color: var(--white); font-weight: 600; }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 12px; margin-top: 26px; }
 
-/* ══════════════════════════════════
-   SLIDE 6 — PROPIETARIO vs ABIERTO
-══════════════════════════════════ */
-#s6 { background: var(--mid); }
-.vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-.vs-col { padding: 0 4px; }
-.vs-col-title {
-  font-size: 13px; font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 10px 12px;
-  border-radius: 8px 8px 0 0;
-  text-align: center;
-  margin-bottom: 2px;
-}
-.vs-row {
-  display: flex;
-  flex-direction: column;
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,.05);
-  margin-bottom: 2px;
-  padding: 10px 12px;
-}
-.vs-row:last-child { border-radius: 0 0 8px 8px; }
-.vs-attr { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; opacity: .55; margin-bottom: 3px; font-family: 'JetBrains Mono', monospace; }
-.vs-val  { font-size: 12px; line-height: 1.4; }
-.vs-divider {
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column;
-  position: relative;
-}
-.vs-badge {
-  position: absolute;
-  left: 50%; transform: translateX(-50%);
-  top: 50%;
-  margin-top: -16px;
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: var(--card);
-  border: 2px solid var(--cyan);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 800;
-  color: var(--cyan);
-  z-index: 5;
-  font-family: 'JetBrains Mono', monospace;
-}
+  /* accordion */
+  .accordion { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .acc-item { background: var(--card); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; overflow: hidden; transition: border-color .2s; }
+  .acc-item.open { border-color: rgba(0,200,255,.35); }
+  .acc-trigger {
+    display: flex; align-items: center; gap: 13px;
+    padding: 13px 17px; cursor: pointer;
+    list-style: none; user-select: none;
+  }
+  .acc-trigger::-webkit-details-marker { display: none; }
+  .acc-circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .acc-info { flex: 1; }
+  .acc-step { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+  .acc-step-title { font-weight: 700; font-size: 14px; color: var(--white); }
+  .acc-chevron { color: var(--gray); font-size: 16px; transition: transform .2s; flex-shrink: 0; }
+  details[open] .acc-chevron { transform: rotate(180deg); }
+  .acc-body { padding: 0 17px 17px; border-top: 1px solid rgba(255,255,255,.06); }
+  .acc-body p { font-size: 14px; color: var(--offW); line-height: 1.75; margin: 12px 0 10px; }
+  .acc-tips-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .acc-tip { display: flex; gap: 9px; margin-bottom: 7px; font-size: 13px; color: var(--offW); line-height: 1.6; }
+  .tip-arrow { flex-shrink: 0; }
 
-/* ══════════════════════════════════
-   SLIDE 7 — STALLMAN
-══════════════════════════════════ */
-#s7 { background: var(--bg); }
-.rms-header {
-  display: flex; gap: 16px; align-items: center;
-  background: var(--card);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(0,240,160,.2);
-}
-.rms-avatar {
-  width: 64px; height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(0,240,160,.2), rgba(0,212,255,.1));
-  border: 2px solid var(--green);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; font-weight: 800;
-  color: var(--green);
-  font-family: 'JetBrains Mono', monospace;
-  flex-shrink: 0;
-}
-.rms-info h3 { font-size: 16px; font-weight: 800; margin-bottom: 3px; }
-.rms-info p  { font-size: 12px; color: var(--gray); line-height: 1.4; }
-.rms-tag {
-  display: inline-block;
-  font-size: 10px;
-  background: rgba(0,240,160,.15);
-  color: var(--green);
-  border-radius: 4px;
-  padding: 2px 8px;
-  margin-top: 5px;
-  font-family: 'JetBrains Mono', monospace;
-}
-.quote-box {
-  background: rgba(0,240,160,.07);
-  border-left: 3px solid var(--green);
-  border-radius: 0 10px 10px 0;
-  padding: 13px 15px;
-  margin-bottom: 16px;
-  font-style: italic;
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--white);
-}
-.quote-box cite { display: block; margin-top: 6px; font-size: 11px; color: var(--gray); font-style: normal; }
-.hitos { display: flex; flex-direction: column; gap: 8px; }
-.hito {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: var(--card);
-  border-radius: 8px;
-  padding: 10px 13px;
-}
-.hito-year {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px; font-weight: 700;
-  flex-shrink: 0; width: 36px;
-}
-.hito-text { font-size: 12px; color: var(--gray); line-height: 1.5; }
+  /* sources grid */
+  .sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 9px; }
+  .source-card { background: var(--card); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 13px 15px; }
+  .source-top { display: flex; gap: 11px; align-items: center; margin-bottom: 5px; }
+  .source-icon { font-size: 22px; }
+  .source-name { font-weight: 700; font-size: 14px; color: var(--white); }
+  .source-url  { font-size: 11px; color: var(--cyan); }
+  .source-desc { font-size: 13px; color: var(--gray); line-height: 1.5; }
 
-/* ══════════════════════════════════
-   SLIDE 8 — 4 LIBERTADES
-══════════════════════════════════ */
-#s8 { background: var(--mid); }
-.lib-subtitle {
-  font-size: 11px;
-  color: var(--gray);
-  margin-bottom: 18px;
-  line-height: 1.5;
-  font-family: 'JetBrains Mono', monospace;
-}
-.libertades { display: flex; flex-direction: column; gap: 10px; }
-.libertad-card {
-  border-radius: 12px;
-  padding: 15px 16px;
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,.06);
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-}
-.lib-num {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
-  flex-shrink: 0;
-}
-.lib-body {}
-.lib-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.lib-desc  { font-size: 12px; color: var(--gray); line-height: 1.55; }
-.lib-example { font-size: 11px; margin-top: 6px; line-height: 1.4; padding: 6px 9px; border-radius: 6px; font-style: italic; }
-.lib-note {
-  background: rgba(255,122,53,.1);
-  border: 1px solid rgba(255,122,53,.3);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--white);
-  margin-top: 12px;
-}
+  /* exposicion */
+  .expo-card { background: var(--card); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 16px 20px; }
+  .expo-row { display: flex; gap: 13px; align-items: flex-start; padding-bottom: 11px; margin-bottom: 11px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .expo-row:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .expo-icon { font-size: 20px; flex-shrink: 0; }
+  .expo-label { font-size: 10px; color: var(--orange); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+  .expo-val   { font-size: 14px; color: var(--offW); }
 
-/* ══════════════════════════════════
-   SLIDE 9 — ACTIVIDAD
-══════════════════════════════════ */
-#s9 {
-  background: var(--bg);
-  background-image: radial-gradient(ellipse at 80% 20%, rgba(0,212,255,.1) 0%, transparent 50%),
-                    radial-gradient(ellipse at 20% 80%, rgba(192,132,252,.08) 0%, transparent 50%);
-}
-.activity-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.act-step {
-  display: flex; gap: 14px; align-items: flex-start;
-  background: var(--card);
-  border-radius: 12px;
-  padding: 14px 15px;
-  border: 1px solid rgba(255,255,255,.06);
-}
-.act-num {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: var(--cyan);
-  color: var(--bg);
-  font-weight: 800; font-size: 14px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.act-text strong { display: block; font-size: 14px; margin-bottom: 3px; }
-.act-text span   { font-size: 12px; color: var(--gray); line-height: 1.5; }
-.activity-btn {
-  display: block;
-  width: 100%;
-  padding: 15px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--cyan), #0099cc);
-  color: var(--bg);
-  font-size: 15px; font-weight: 800;
-  text-align: center;
-  text-decoration: none;
-  letter-spacing: .5px;
-  box-shadow: 0 4px 24px rgba(0,212,255,.3);
-  border: none;
-  cursor: pointer;
-}
+  /* evaluacion */
+  .eval-list { display: flex; flex-direction: column; gap: 7px; }
+  .eval-row {
+    background: var(--card); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px; padding: 10px 15px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .eval-left { display: flex; gap: 10px; align-items: center; }
+  .eval-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .eval-aspect { font-size: 14px; color: var(--offW); }
+  .eval-pct { font-weight: 700; font-size: 14px; }
 
-/* ─── DECORATIVE BG NUMBERS ─── */
-.bg-num {
-  position: absolute;
-  font-size: 180px;
-  font-weight: 800;
-  font-family: 'Space Grotesk', sans-serif;
-  opacity: .03;
-  right: -20px; bottom: 20px;
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  letter-spacing: -10px;
-}
+  /* ══════════════════════════════════════════
+     MODAL AYUDA
+  ══════════════════════════════════════════ */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.78);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--mid);
+    border: 1px solid rgba(187,134,252,.4);
+    border-radius: 14px;
+    max-width: 560px; width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 26px;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .modal-eyebrow { font-size: 10px; color: var(--purple); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+  .modal-header h3 { font-size: 18px; color: var(--white); }
+  .btn-close {
+    background: var(--card); border: none; color: var(--gray);
+    border-radius: 8px; padding: 5px 12px; cursor: pointer;
+    font-size: 20px; line-height: 1; flex-shrink: 0;
+  }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .modal-section p { font-size: 14px; color: var(--offW); line-height: 1.75; }
+  .modal-section ul { padding-left: 18px; }
+  .modal-section ul li { font-size: 14px; color: var(--offW); line-height: 1.75; margin-bottom: 5px; }
+  .example-row {
+    background: var(--bg);
+    border-left: 3px solid var(--green);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    font-size: 13px; color: var(--offW);
+  }
+  .error-box {
+    background: rgba(255,122,53,.1);
+    border: 1px solid rgba(255,122,53,.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .error-box p { font-size: 14px; color: var(--offW); line-height: 1.65; }
+  .modal-close-btn { width: 100%; padding: 12px; font-size: 14px; border-radius: 10px; margin-top: 4px; }
 
-/* ─── SWIPE HINT ─── */
-.swipe-hint {
-  position: absolute;
-  bottom: 20px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 1px;
-  color: var(--gray);
-  opacity: .6;
-  white-space: nowrap;
-}
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--card); border-radius: 3px; }
 </style>
 </head>
 <body>
 
-<div id="progress-bar" style="width:11.1%"></div>
-<div id="counter">01 / 09</div>
-<div id="dots">
-  <div class="dot active"  onclick="goTo(0)"></div>
-  <div class="dot"         onclick="goTo(1)"></div>
-  <div class="dot"         onclick="goTo(2)"></div>
-  <div class="dot"         onclick="goTo(3)"></div>
-  <div class="dot"         onclick="goTo(4)"></div>
-  <div class="dot"         onclick="goTo(5)"></div>
-  <div class="dot"         onclick="goTo(6)"></div>
-  <div class="dot"         onclick="goTo(7)"></div>
-  <div class="dot"         onclick="goTo(8)"></div>
-</div>
-
-<div id="slides">
-
-<!-- ══ SLIDE 1 — PORTADA ══ -->
-<div class="slide" id="s1">
-  <div class="bg-grid"></div>
-  <div class="glow-orb"></div>
-  <div class="glow-orb2"></div>
-  <div class="slide-inner" style="justify-content:flex-end;padding-bottom:90px">
-    <div class="cover-tag">Informática · Secundaria</div>
-    <div class="cover-title">
-      Sistemas<span>Operativos</span>
+<!-- ══════════════════════════════════════════
+     SCREEN 1: ELEGIR SO
+══════════════════════════════════════════ -->
+<div id="screen-elegir" class="screen active">
+  <div class="header header-cyan">
+    <div class="header-title">
+      <div class="eyebrow">NTICx · Educación Secundaria Cuarto sociales/Ella. Profesor Pablo E, Sali</div>
+      <h1>🖥️ Actividad de Investigación</h1>
+      <p>Sistemas Operativos: Propietarios y de Código Abierto</p>
     </div>
-    <p class="cover-sub">Propietarios y de Código Abierto<br>Historia · Funciones · Tipos · Libertades</p>
+    <button class="btn btn-outline-purple" onclick="showGuia()">📚 Ver guía</button>
   </div>
-  <div class="cover-scroll">
-    <span>deslizá</span>
-    <span class="arrow-down">↓</span>
+  <div class="content">
+    <div class="info-box">
+      <strong>📋 Consigna:</strong> Elegí un sistema operativo de la lista e investigá todo sobre él. Completá la ficha y preparate para presentarlo a la clase.
+      <a onclick="showGuia()"> ¿No sabés por dónde empezar? → Ver guía completa</a>
+    </div>
+    <div class="filters">
+      <input class="search-input" id="search-input" type="text" placeholder="🔍 Buscar sistema operativo…" oninput="filterSO()">
+      <button class="btn btn-filter active" id="filt-todos"      onclick="setFilter('todos')">🌐 Todos</button>
+      <button class="btn btn-filter"        id="filt-propietario" onclick="setFilter('propietario')">🔒 Propietarios</button>
+      <button class="btn btn-filter"        id="filt-abierto"     onclick="setFilter('abierto')">🌿 Abiertos</button>
+    </div>
+    <p class="count-label" id="count-label">34 sistemas disponibles</p>
+    <div class="so-grid" id="so-grid"></div>
   </div>
 </div>
 
-<!-- ══ SLIDE 2 — ¿QUÉ ES UN SO? ══ -->
-<div class="slide" id="s2">
-  <div class="slide-inner">
-    <div class="bg-num">SO</div>
-    <div class="eyebrow" style="color:var(--cyan)">// 01 · Definición</div>
-    <div class="accent-line" style="background:var(--cyan)"></div>
-    <div class="slide-title">¿Qué es un Sistema<br>Operativo?</div>
-    <div class="def-box">
-      Un <strong>Sistema Operativo (SO)</strong> es el software fundamental que actúa como <strong>intermediario</strong> entre el hardware de la computadora y los programas del usuario. Sin él, la máquina no puede funcionar.
+<!-- ══════════════════════════════════════════
+     SCREEN 2: INVESTIGAR
+══════════════════════════════════════════ -->
+<div id="screen-investigar" class="screen">
+  <div class="header header-cyan">
+    <button class="btn" onclick="goElegir()">← Elegir otro</button>
+    <div class="header-title">
+      <div class="eyebrow">Investigando</div>
+      <h2 id="inv-title">—</h2>
     </div>
-    <div class="bridge-row">
-      <div class="bridge-box" style="background:rgba(255,122,53,.12);border:1px solid rgba(255,122,53,.3)">
-        <span class="bb-icon">🔧</span>
-        <span style="color:var(--orange)">HARDWARE</span>
-        <span class="bb-label">CPU · RAM · Disco</span>
-      </div>
-      <div class="bridge-arrow">→</div>
-      <div class="bridge-box" style="background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3)">
-        <span class="bb-icon">⚙️</span>
-        <span style="color:var(--cyan)">SO</span>
-        <span class="bb-label">El puente</span>
-      </div>
-      <div class="bridge-arrow">→</div>
-      <div class="bridge-box" style="background:rgba(0,240,160,.12);border:1px solid rgba(0,240,160,.3)">
-        <span class="bb-icon">👤</span>
-        <span style="color:var(--green)">USUARIO</span>
-        <span class="bb-label">Vos y tus apps</span>
-      </div>
+    <button class="btn btn-outline-purple" onclick="showGuia()">📚 Guía</button>
+    <div class="progress-wrap">
+      <span id="progress-label">0% completado</span>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     </div>
   </div>
-</div>
-
-<!-- ══ SLIDE 3 — FUNCIONES ══ -->
-<div class="slide" id="s3">
-  <div class="slide-inner">
-    <div class="eyebrow" style="color:var(--green)">// 02 · Funciones</div>
-    <div class="accent-line" style="background:var(--green)"></div>
-    <div class="slide-title" style="font-size:clamp(24px,7vw,36px)">¿Para qué sirve<br>el SO?</div>
-    <div class="func-grid">
-      <div class="func-card" style="border-top:2px solid var(--cyan)">
-        <span class="fc-icon">⚙️</span>
-        <div class="fc-title" style="color:var(--cyan)">Procesador</div>
-        <div class="fc-desc">Decide qué programa usa la CPU y por cuánto tiempo.</div>
-      </div>
-      <div class="func-card" style="border-top:2px solid var(--green)">
-        <span class="fc-icon">💾</span>
-        <div class="fc-title" style="color:var(--green)">Memoria RAM</div>
-        <div class="fc-desc">Distribuye la RAM entre los programas activos.</div>
-      </div>
-      <div class="func-card" style="border-top:2px solid var(--orange)">
-        <span class="fc-icon">📁</span>
-        <div class="fc-title" style="color:var(--orange)">Archivos</div>
-        <div class="fc-desc">Organiza y recupera datos en el disco.</div>
-      </div>
-      <div class="func-card" style="border-top:2px solid var(--purple)">
-        <span class="fc-icon">🖥️</span>
-        <div class="fc-title" style="color:var(--purple)">Interfaz</div>
-        <div class="fc-desc">Muestra ventanas (GUI) o línea de comandos (CLI).</div>
-      </div>
-      <div class="func-card span2" style="border-top:2px solid var(--yellow)">
-        <span class="fc-icon">🔐</span>
-        <div class="fc-text">
-          <div class="fc-title" style="color:var(--yellow)">Seguridad y dispositivos</div>
-          <div class="fc-desc">Controla permisos de usuarios y gestiona periféricos: teclado, mouse, impresora…</div>
-        </div>
-      </div>
+  <div class="content">
+    <div class="so-selected" id="so-selected-card"></div>
+    <div class="hint-box">
+      <span>💡</span>
+      <span>En cada pregunta encontrás un botón <strong style="color:var(--purple)">? Ayuda</strong> con ejemplos, cómo buscar la información y errores frecuentes a evitar.</span>
     </div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 4 — HISTORIA ══ -->
-<div class="slide" id="s4">
-  <div class="slide-inner">
-    <div class="bg-num">⏱</div>
-    <div class="eyebrow" style="color:var(--yellow)">// 03 · Historia</div>
-    <div class="accent-line" style="background:var(--yellow)"></div>
-    <div class="slide-title" style="font-size:clamp(24px,7vw,36px)">Breve historia<br>de los SO</div>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-dot" style="background:var(--gray)"></div>
-        <div class="tl-year" style="color:var(--gray)">1950s</div>
-        <div class="tl-text">Sin SO. Los programas se cargaban con tarjetas perforadas, uno a la vez.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:var(--cyan)"></div>
-        <div class="tl-year" style="color:var(--cyan)">1960s</div>
-        <div class="tl-text">Primeros SO. IBM OS/360 introduce la <strong style="color:var(--white)">multitarea</strong>: varias tareas a la vez.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:var(--green)"></div>
-        <div class="tl-year" style="color:var(--green)">1970s</div>
-        <div class="tl-text"><strong style="color:var(--white)">Unix</strong> nace en Bell Labs. Influyó en casi todos los SO modernos.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:var(--purple)"></div>
-        <div class="tl-year" style="color:var(--purple)">1985</div>
-        <div class="tl-text"><strong style="color:var(--white)">Windows 1.0</strong> y <strong style="color:var(--white)">Macintosh OS</strong>: llega la interfaz gráfica al público masivo.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:var(--orange)"></div>
-        <div class="tl-year" style="color:var(--orange)">1991</div>
-        <div class="tl-text">Linus Torvalds crea el núcleo <strong style="color:var(--white)">Linux</strong>. Nace el SO libre más importante de la historia.</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:var(--yellow)"></div>
-        <div class="tl-year" style="color:var(--yellow)">2000s+</div>
-        <div class="tl-text">Expansión a celulares: <strong style="color:var(--white)">iOS</strong> (2007) y <strong style="color:var(--white)">Android</strong> (2008). Los SO llegan a todos los bolsillos.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 5 — TIPOS ══ -->
-<div class="slide" id="s5">
-  <div class="slide-inner">
-    <div class="eyebrow" style="color:var(--purple)">// 04 · Tipos</div>
-    <div class="accent-line" style="background:var(--purple)"></div>
-    <div class="slide-title" style="font-size:clamp(24px,7vw,36px)">Tipos de<br>Sistemas Operativos</div>
-    <div class="tipos-list">
-      <div class="tipo-row">
-        <span class="tr-icon">📜</span>
-        <div>
-          <div class="tr-label" style="color:var(--cyan)">Por licencia</div>
-          <div class="tr-content"><strong>Propietario</strong> — código cerrado (Windows, macOS)<br><strong>Código abierto</strong> — código visible (Linux, Ubuntu)</div>
-        </div>
-      </div>
-      <div class="tipo-row">
-        <span class="tr-icon">🖱️</span>
-        <div>
-          <div class="tr-label" style="color:var(--green)">Por interfaz</div>
-          <div class="tr-content"><strong>GUI</strong> — ventanas e íconos (Windows, macOS)<br><strong>CLI</strong> — solo texto y comandos (MS-DOS, Alpine)</div>
-        </div>
-      </div>
-      <div class="tipo-row">
-        <span class="tr-icon">👥</span>
-        <div>
-          <div class="tr-label" style="color:var(--orange)">Por usuarios</div>
-          <div class="tr-content"><strong>Mono-usuario</strong> — un usuario a la vez<br><strong>Multi-usuario</strong> — varios usuarios simultáneos</div>
-        </div>
-      </div>
-      <div class="tipo-row">
-        <span class="tr-icon">⚡</span>
-        <div>
-          <div class="tr-label" style="color:var(--purple)">Por tareas</div>
-          <div class="tr-content"><strong>Monotarea</strong> — una tarea a la vez<br><strong>Multitarea</strong> — varias tareas al mismo tiempo</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 6 — PROPIETARIO vs ABIERTO ══ -->
-<div class="slide" id="s6">
-  <div class="slide-inner" style="padding-top:28px">
-    <div class="eyebrow" style="color:var(--orange)">// 05 · Comparativa</div>
-    <div class="accent-line" style="background:var(--orange)"></div>
-    <div class="slide-title" style="font-size:clamp(22px,6.5vw,34px);margin-bottom:16px">Propietario<br>vs Código Abierto</div>
-    <div style="position:relative">
-      <div class="vs-badge">VS</div>
-      <div class="vs-grid">
-        <div class="vs-col">
-          <div class="vs-col-title" style="background:rgba(255,122,53,.15);color:var(--orange)">🔒 Propietario</div>
-          <div class="vs-row"><div class="vs-attr">Código</div><div class="vs-val">❌ Cerrado / secreto</div></div>
-          <div class="vs-row"><div class="vs-attr">Modificar</div><div class="vs-val">❌ No permitido</div></div>
-          <div class="vs-row"><div class="vs-attr">Costo</div><div class="vs-val">💰 Generalmente pago</div></div>
-          <div class="vs-row"><div class="vs-attr">Soporte</div><div class="vs-val">✅ Oficial</div></div>
-          <div class="vs-row"><div class="vs-attr">Ejemplos</div><div class="vs-val" style="color:var(--orange)">Windows · macOS · iOS</div></div>
-        </div>
-        <div class="vs-col">
-          <div class="vs-col-title" style="background:rgba(0,240,160,.12);color:var(--green)">🌿 Código Abierto</div>
-          <div class="vs-row"><div class="vs-attr">Código</div><div class="vs-val">✅ Visible y público</div></div>
-          <div class="vs-row"><div class="vs-attr">Modificar</div><div class="vs-val">✅ Libre y legal</div></div>
-          <div class="vs-row"><div class="vs-attr">Costo</div><div class="vs-val">🆓 Generalmente gratis</div></div>
-          <div class="vs-row"><div class="vs-attr">Soporte</div><div class="vs-val">👥 Comunidad</div></div>
-          <div class="vs-row"><div class="vs-attr">Ejemplos</div><div class="vs-val" style="color:var(--green)">Linux · Ubuntu · Android</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 7 — STALLMAN ══ -->
-<div class="slide" id="s7">
-  <div class="slide-inner" style="padding-top:24px">
-    <div class="eyebrow" style="color:var(--green)">// 06 · Software Libre</div>
-    <div class="accent-line" style="background:var(--green)"></div>
-    <div class="slide-title" style="font-size:clamp(22px,6.5vw,32px);margin-bottom:14px">¿Quién definió<br>el Software Libre?</div>
-    <div class="rms-header">
-      <div class="rms-avatar">RMS</div>
-      <div class="rms-info">
-        <h3>Richard Stallman</h3>
-        <p>Nacido en 1953 · Nueva York<br>Programador, activista y filósofo</p>
-        <span class="rms-tag">Fundador GNU · 1983</span>
-      </div>
-    </div>
-    <div class="quote-box">
-      "El software libre es una cuestión de <strong>libertad</strong>, no de precio."
-      <cite>— Richard Stallman, 1985</cite>
-    </div>
-    <div class="hitos">
-      <div class="hito">
-        <span class="hito-year" style="color:var(--green)">1983</span>
-        <span class="hito-text">Lanza el <strong style="color:var(--white)">Proyecto GNU</strong> para crear un SO completamente libre.</span>
-      </div>
-      <div class="hito">
-        <span class="hito-year" style="color:var(--cyan)">1985</span>
-        <span class="hito-text">Funda la <strong style="color:var(--white)">Free Software Foundation (FSF)</strong> y publica el Manifiesto GNU.</span>
-      </div>
-      <div class="hito">
-        <span class="hito-year" style="color:var(--purple)">1989</span>
-        <span class="hito-text">Crea la licencia <strong style="color:var(--white)">GPL</strong> — base legal del software libre.</span>
-      </div>
-      <div class="hito">
-        <span class="hito-year" style="color:var(--orange)">1991</span>
-        <span class="hito-text">Torvalds crea <strong style="color:var(--white)">Linux</strong>, que se combina con GNU para formar GNU/Linux.</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 8 — 4 LIBERTADES ══ -->
-<div class="slide" id="s8">
-  <div class="slide-inner" style="padding-top:24px">
-    <div class="eyebrow" style="color:var(--green)">// 07 · Las 4 Libertades</div>
-    <div class="accent-line" style="background:var(--green)"></div>
-    <div class="slide-title" style="font-size:clamp(22px,6.5vw,32px);margin-bottom:8px">Las 4 Libertades<br>del Software Libre</div>
-    <div class="lib-subtitle">Definidas por R. Stallman y la FSF · desde 1985</div>
-    <div class="libertades">
-      <div class="libertad-card">
-        <div class="lib-num" style="background:rgba(0,212,255,.15);color:var(--cyan)">0</div>
-        <div class="lib-body">
-          <div class="lib-title" style="color:var(--cyan)">Libertad de USAR</div>
-          <div class="lib-desc">Ejecutar el programa para cualquier propósito, sin restricciones.</div>
-          <div class="lib-example" style="background:rgba(0,212,255,.08);color:var(--gray)">Ej: Usás Linux en casa, en la escuela o en una empresa sin pedir permiso.</div>
-        </div>
-      </div>
-      <div class="libertad-card">
-        <div class="lib-num" style="background:rgba(0,240,160,.15);color:var(--green)">1</div>
-        <div class="lib-body">
-          <div class="lib-title" style="color:var(--green)">Libertad de ESTUDIAR</div>
-          <div class="lib-desc">Acceder al código fuente y entender cómo funciona el programa.</div>
-          <div class="lib-example" style="background:rgba(0,240,160,.08);color:var(--gray)">Ej: Cualquiera puede leer y aprender del código de Ubuntu.</div>
-        </div>
-      </div>
-      <div class="libertad-card">
-        <div class="lib-num" style="background:rgba(192,132,252,.15);color:var(--purple)">2</div>
-        <div class="lib-body">
-          <div class="lib-title" style="color:var(--purple)">Libertad de DISTRIBUIR</div>
-          <div class="lib-desc">Copiar y compartir el programa libremente con quien lo necesite.</div>
-          <div class="lib-example" style="background:rgba(192,132,252,.08);color:var(--gray)">Ej: Podés copiar Linux en un pendrive y dárselo a un amigo.</div>
-        </div>
-      </div>
-      <div class="libertad-card">
-        <div class="lib-num" style="background:rgba(255,122,53,.15);color:var(--orange)">3</div>
-        <div class="lib-body">
-          <div class="lib-title" style="color:var(--orange)">Libertad de MEJORAR</div>
-          <div class="lib-desc">Modificar el programa y publicar esas mejoras para toda la comunidad.</div>
-          <div class="lib-example" style="background:rgba(255,122,53,.08);color:var(--gray)">Ej: Ubuntu nació de mejoras hechas sobre Debian por Canonical.</div>
-        </div>
-      </div>
-    </div>
-    <div class="lib-note">
-      ⚠️ <strong>"Libre"</strong> no significa <em>gratuito</em> — significa libre como en <strong>libertad de expresión</strong>, no como en cerveza gratis. <em>(Stallman, 1985)</em>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SLIDE 9 — ACTIVIDAD ══ -->
-<div class="slide" id="s9">
-  <div class="slide-inner">
-    <div class="bg-num">★</div>
-    <div class="eyebrow" style="color:var(--cyan)">// 08 · ¡Tu turno!</div>
-    <div class="accent-line" style="background:linear-gradient(90deg,var(--cyan),var(--green))"></div>
-    <div class="slide-title">Actividad de<br>Investigación</div>
-    <div class="activity-steps">
-      <div class="act-step">
-        <div class="act-num">1</div>
-        <div class="act-text">
-          <strong>Elegí un SO</strong>
-          <span>Seleccioná un sistema operativo de la lista que te llame la atención.</span>
-        </div>
-      </div>
-      <div class="act-step">
-        <div class="act-num">2</div>
-        <div class="act-text">
-          <strong>Investigá</strong>
-          <span>Buscá sus características, funciones, tipo, costo y requerimientos de hardware.</span>
-        </div>
-      </div>
-      <div class="act-step">
-        <div class="act-num">3</div>
-        <div class="act-text">
-          <strong>Completá la ficha</strong>
-          <span>Respondé todas las preguntas del formulario con tus propias palabras.</span>
-        </div>
-      </div>
-      <div class="act-step">
-        <div class="act-num">4</div>
-        <div class="act-text">
-          <strong>Presentá a la clase</strong>
-          <span>3 a 5 minutos explicando lo que aprendiste. Podés usar lámina o diapositivas.</span>
-        </div>
-      </div>
-    </div>
-    <button class="activity-btn" onclick="alert('¡Abrí la ficha de investigación para comenzar!')">
-      🚀 Ir a la ficha de investigación
+    <div class="q-list" id="q-list"></div>
+    <button class="btn btn-full" id="btn-siguiente" onclick="goRevisar()" disabled>
+      Completá al menos 6 preguntas para continuar (0/10)
     </button>
   </div>
 </div>
 
-</div><!-- /slides -->
+<!-- ══════════════════════════════════════════
+     SCREEN 3: REVISAR
+══════════════════════════════════════════ -->
+<div id="screen-revisar" class="screen">
+  <div class="header header-green">
+    <button class="btn" onclick="showScreen('investigar')">← Editar</button>
+    <div class="header-title">
+      <div class="eyebrow" style="color:var(--green)">✅ Ficha lista</div>
+      <h2 id="rev-title">—</h2>
+    </div>
+    <button class="btn btn-cyan" onclick="goElegir()">🔄 Nuevo SO</button>
+  </div>
+  <div class="content">
+    <div class="result-card">
+      <div class="result-header" id="result-header"></div>
+      <div class="result-body" id="result-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4: GUÍA GENERAL
+══════════════════════════════════════════ -->
+<div id="screen-guia" class="screen">
+  <div class="header header-purple">
+    <button class="btn" id="btn-guia-volver" onclick="volverdesdeguia()">← Volver</button>
+    <div class="header-title">
+      <div class="eyebrow" style="color:var(--purple)">Recurso de apoyo</div>
+      <h2>📚 Guía de Investigación</h2>
+    </div>
+  </div>
+  <div class="content">
+
+    <div class="objective-box">
+      <div class="eyebrow">🎯 Objetivo de la actividad</div>
+      <p>Investigar un sistema operativo real, comprender sus características y poder explicárselo a tus compañeros/as con tus propias palabras.</p>
+    </div>
+
+    <p class="section-title">📋 Etapas del trabajo</p>
+    <div class="accordion">
+
+      <details>
+        <summary class="acc-trigger">
+          <div class="acc-circle" style="background:rgba(0,200,255,.18);border:2px solid var(--cyan)">🎯</div>
+          <div class="acc-info">
+            <div class="acc-step" style="color:var(--cyan)">Paso 1</div>
+            <div class="acc-step-title">Elegí tu SO</div>
+          </div>
+          <span class="acc-chevron">⌄</span>
+        </summary>
+        <div class="acc-body">
+          <p>Elegí un sistema operativo que te llame la atención. No tiene que ser el que más conocés — ¡a veces los más raros son los más interesantes!</p>
+          <div class="acc-tips-label" style="color:var(--cyan)">Consejos</div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--cyan)">▸</span><span>Si usás Windows en casa, probá investigar uno de código abierto como Ubuntu o Fedora.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--cyan)">▸</span><span>Si ya conocés Linux, investigá algo diferente: un SO embebido como QNX o VxWorks.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--cyan)">▸</span><span>Los SO históricos como MS-DOS o IBM OS/360 tienen historias muy interesantes.</span></div>
+        </div>
+      </details>
+
+      <details>
+        <summary class="acc-trigger">
+          <div class="acc-circle" style="background:rgba(187,134,252,.18);border:2px solid var(--purple)">🔍</div>
+          <div class="acc-info">
+            <div class="acc-step" style="color:var(--purple)">Paso 2</div>
+            <div class="acc-step-title">Buscá información</div>
+          </div>
+          <span class="acc-chevron">⌄</span>
+        </summary>
+        <div class="acc-body">
+          <p>Usá al menos 2 fuentes distintas. Compará lo que dicen y quedate con la información que más se repite o viene de fuentes confiables.</p>
+          <div class="acc-tips-label" style="color:var(--purple)">Consejos</div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--purple)">▸</span><span>Wikipedia es un buen punto de partida, pero no la única fuente.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--purple)">▸</span><span>Los sitios oficiales tienen info muy precisa: microsoft.com, ubuntu.com, apple.com…</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--purple)">▸</span><span>YouTube tiene videos comparativos muy útiles para ver cómo se ve cada SO.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--purple)">▸</span><span>Si encontrás algo que no entendés, anotalo y preguntale a tu profe.</span></div>
+        </div>
+      </details>
+
+      <details>
+        <summary class="acc-trigger">
+          <div class="acc-circle" style="background:rgba(0,229,160,.18);border:2px solid var(--green)">📝</div>
+          <div class="acc-info">
+            <div class="acc-step" style="color:var(--green)">Paso 3</div>
+            <div class="acc-step-title">Completá la ficha</div>
+          </div>
+          <span class="acc-chevron">⌄</span>
+        </summary>
+        <div class="acc-body">
+          <p>Respondé cada pregunta con tus propias palabras. No copies y pegues — si lo entendés, podés explicarlo.</p>
+          <div class="acc-tips-label" style="color:var(--green)">Consejos</div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--green)">▸</span><span>Escribí como si le explicaras a alguien que nunca escuchó hablar del tema.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--green)">▸</span><span>Podés usar ejemplos de la vida cotidiana para explicar conceptos técnicos.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--green)">▸</span><span>Si no encontrás info sobre alguna pregunta, indicá dónde buscaste.</span></div>
+        </div>
+      </details>
+
+      <details>
+        <summary class="acc-trigger">
+          <div class="acc-circle" style="background:rgba(255,122,53,.18);border:2px solid var(--orange)">🎤</div>
+          <div class="acc-info">
+            <div class="acc-step" style="color:var(--orange)">Paso 4</div>
+            <div class="acc-step-title">Preparate para exponer</div>
+          </div>
+          <span class="acc-chevron">⌄</span>
+        </summary>
+        <div class="acc-body">
+          <p>La exposición dura 3-5 minutos. Pensá qué es lo más importante y empezá por ahí. No leas todo — contalo como si fuera una historia.</p>
+          <div class="acc-tips-label" style="color:var(--orange)">Consejos</div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--orange)">▸</span><span>Empezá con algo que llame la atención: un dato curioso, una pregunta, una imagen.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--orange)">▸</span><span>Practicá en casa frente al espejo o con alguien de tu familia.</span></div>
+          <div class="acc-tip"><span class="tip-arrow" style="color:var(--orange)">▸</span><span>Podés usar una lámina, la computadora, o simplemente hablar — lo que te resulte más cómodo.</span></div>
+        </div>
+      </details>
+
+    </div><!-- /accordion -->
+
+    <p class="section-title">🌐 ¿Dónde buscar información?</p>
+    <div class="sources-grid">
+      <div class="source-card">
+        <div class="source-top"><span class="source-icon">📖</span><div><div class="source-name">Wikipedia</div><div class="source-url">wikipedia.org</div></div></div>
+        <p class="source-desc">Buen punto de partida. Buscá el nombre exacto del SO en la barra de búsqueda.</p>
+      </div>
+      <div class="source-card">
+        <div class="source-top"><span class="source-icon">🌐</span><div><div class="source-name">Sitio oficial del SO</div><div class="source-url">varía por SO</div></div></div>
+        <p class="source-desc">La fuente más confiable para datos técnicos y fecha de lanzamiento.</p>
+      </div>
+      <div class="source-card">
+        <div class="source-top"><span class="source-icon">🐧</span><div><div class="source-name">DistroWatch</div><div class="source-url">distrowatch.com</div></div></div>
+        <p class="source-desc">Para distribuciones Linux: historial, versiones y popularidad comparada.</p>
+      </div>
+      <div class="source-card">
+        <div class="source-top"><span class="source-icon">▶️</span><div><div class="source-name">YouTube</div><div class="source-url">youtube.com</div></div></div>
+        <p class="source-desc">Buscá "nombre del SO review" o "cómo funciona nombre del SO".</p>
+      </div>
+      <div class="source-card">
+        <div class="source-top"><span class="source-icon">📚</span><div><div class="source-name">TechTarget / Britannica</div><div class="source-url">varios</div></div></div>
+        <p class="source-desc">Artículos enciclopédicos confiables en español e inglés.</p>
+      </div>
+    </div>
+
+    <p class="section-title">🎤 ¿Cómo es la exposición?</p>
+    <div class="expo-card">
+      <div class="expo-row"><span class="expo-icon">⏱️</span><div><div class="expo-label">Duración</div><div class="expo-val">3 a 5 minutos por exposición</div></div></div>
+      <div class="expo-row"><span class="expo-icon">🗂️</span><div><div class="expo-label">Formato</div><div class="expo-val">Libre: lámina, computadora, o hablar directamente</div></div></div>
+      <div class="expo-row"><span class="expo-icon">📌</span><div><div class="expo-label">Contenido mínimo</div><div class="expo-val">Nombre del SO, tipo, usos, ventajas y una curiosidad</div></div></div>
+      <div class="expo-row"><span class="expo-icon">💬</span><div><div class="expo-label">Lenguaje</div><div class="expo-val">Con tus propias palabras — no leas todo, explicalo</div></div></div>
+      <div class="expo-row"><span class="expo-icon">🙋</span><div><div class="expo-label">Preguntas</div><div class="expo-val">Tus compañeros/as podrán hacer preguntas al final</div></div></div>
+    </div>
+
+    <p class="section-title">⭐ Criterios de evaluación</p>
+    <div class="eval-list">
+      <div class="eval-row"><div class="eval-left"><div class="eval-dot" style="background:var(--cyan)"></div><span class="eval-aspect">Investigación (ficha completa)</span></div><span class="eval-pct" style="color:var(--cyan)">40%</span></div>
+      <div class="eval-row"><div class="eval-left"><div class="eval-dot" style="background:var(--green)"></div><span class="eval-aspect">Claridad al explicar</span></div><span class="eval-pct" style="color:var(--green)">25%</span></div>
+      <div class="eval-row"><div class="eval-left"><div class="eval-dot" style="background:var(--purple)"></div><span class="eval-aspect">Uso correcto del vocabulario técnico</span></div><span class="eval-pct" style="color:var(--purple)">20%</span></div>
+      <div class="eval-row"><div class="eval-left"><div class="eval-dot" style="background:var(--orange)"></div><span class="eval-aspect">Curiosidad / algo llamativo</span></div><span class="eval-pct" style="color:var(--orange)">15%</span></div>
+    </div>
+
+    <button class="btn btn-cyan btn-full" onclick="volverdesdeguia()" style="margin-top:28px">✓ Listo/a — ¡a investigar!</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL AYUDA
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow">Guía de orientación</div>
+        <h3 id="modal-title">—</h3>
+      </div>
+      <button class="btn-close" onclick="closeModalDirect()">×</button>
+    </div>
+    <div id="modal-body"></div>
+    <button class="btn btn-cyan modal-close-btn" onclick="closeModalDirect()">✓ Entendido, volver a la ficha</button>
+  </div>
+</div>
 
 <script>
-const slidesEl  = document.getElementById("slides");
-const allSlides = document.querySelectorAll(".slide");
-const dots      = document.querySelectorAll(".dot");
-const counter   = document.getElementById("counter");
-const progress  = document.getElementById("progress-bar");
-const total     = allSlides.length;
-let current     = 0;
-let scrolling   = false;
+// ─── DATOS ───────────────────────────────────────────────────────────────────
 
-function updateUI(idx) {
-  current = idx;
-  const pct = ((idx + 1) / total * 100).toFixed(1);
-  progress.style.width = pct + "%";
-  counter.textContent  = String(idx + 1).padStart(2,"0") + " / " + String(total).padStart(2,"0");
-  dots.forEach((d, i) => d.classList.toggle("active", i === idx));
-}
+const SISTEMAS = [
+  { nombre:"Windows 11",      empresa:"Microsoft",          año:2021, icono:"🪟", cat:"propietario" },
+  { nombre:"Windows 10",      empresa:"Microsoft",          año:2015, icono:"🪟", cat:"propietario" },
+  { nombre:"macOS Sonoma",    empresa:"Apple",              año:2023, icono:"🍎", cat:"propietario" },
+  { nombre:"macOS Ventura",   empresa:"Apple",              año:2022, icono:"🍎", cat:"propietario" },
+  { nombre:"iOS 17",          empresa:"Apple",              año:2023, icono:"📱", cat:"propietario" },
+  { nombre:"iPadOS 17",       empresa:"Apple",              año:2023, icono:"📱", cat:"propietario" },
+  { nombre:"Android (Google)",empresa:"Google/AOSP",        año:2008, icono:"🤖", cat:"propietario" },
+  { nombre:"Chrome OS",       empresa:"Google",             año:2011, icono:"🌐", cat:"propietario" },
+  { nombre:"MS-DOS",          empresa:"Microsoft",          año:1981, icono:"⌨️", cat:"propietario" },
+  { nombre:"Windows XP",      empresa:"Microsoft",          año:2001, icono:"🪟", cat:"propietario" },
+  { nombre:"IBM OS/360",      empresa:"IBM",                año:1966, icono:"🖥️", cat:"propietario" },
+  { nombre:"Solaris",         empresa:"Oracle/Sun",         año:1992, icono:"☀️", cat:"propietario" },
+  { nombre:"HP-UX",           empresa:"Hewlett-Packard",    año:1984, icono:"🖨️", cat:"propietario" },
+  { nombre:"AIX",             empresa:"IBM",                año:1986, icono:"💼", cat:"propietario" },
+  { nombre:"z/OS",            empresa:"IBM",                año:2001, icono:"🏢", cat:"propietario" },
+  { nombre:"QNX",             empresa:"BlackBerry",         año:1980, icono:"⚡", cat:"propietario" },
+  { nombre:"VxWorks",         empresa:"Wind River",         año:1987, icono:"🚀", cat:"propietario" },
+  { nombre:"Ubuntu 24.04",    empresa:"Canonical",          año:2024, icono:"🟠", cat:"abierto" },
+  { nombre:"Debian 12",       empresa:"Comunidad",          año:1993, icono:"🌀", cat:"abierto" },
+  { nombre:"Fedora 40",       empresa:"Red Hat/Comunidad",  año:2003, icono:"🎩", cat:"abierto" },
+  { nombre:"Linux Mint",      empresa:"Comunidad",          año:2006, icono:"🌿", cat:"abierto" },
+  { nombre:"Arch Linux",      empresa:"Comunidad",          año:2002, icono:"🏹", cat:"abierto" },
+  { nombre:"Kali Linux",      empresa:"Offensive Security", año:2013, icono:"🐉", cat:"abierto" },
+  { nombre:"CentOS Stream",   empresa:"Red Hat/Comunidad",  año:2004, icono:"🔵", cat:"abierto" },
+  { nombre:"openSUSE",        empresa:"SUSE/Comunidad",     año:2005, icono:"🦎", cat:"abierto" },
+  { nombre:"Manjaro",         empresa:"Comunidad",          año:2011, icono:"🏔️", cat:"abierto" },
+  { nombre:"Elementary OS",   empresa:"Comunidad",          año:2011, icono:"✨", cat:"abierto" },
+  { nombre:"FreeBSD",         empresa:"Comunidad BSD",      año:1993, icono:"😈", cat:"abierto" },
+  { nombre:"OpenBSD",         empresa:"Comunidad BSD",      año:1996, icono:"🐡", cat:"abierto" },
+  { nombre:"Haiku OS",        empresa:"Comunidad",          año:2001, icono:"🌸", cat:"abierto" },
+  { nombre:"ReactOS",         empresa:"Comunidad",          año:1998, icono:"⚛️", cat:"abierto" },
+  { nombre:"Android-x86",     empresa:"Comunidad",          año:2009, icono:"🤖", cat:"abierto" },
+  { nombre:"Tails OS",        empresa:"Comunidad",          año:2009, icono:"🔒", cat:"abierto" },
+  { nombre:"Alpine Linux",    empresa:"Comunidad",          año:2005, icono:"🏔️", cat:"abierto" },
+];
 
-function goTo(idx) {
-  allSlides[idx].scrollIntoView({ behavior: "smooth" });
-}
+const PREGUNTAS = [
+  { id:"empresa",      label:"¿Quién lo desarrolló?",                      tipo:"text",     placeholder:"Empresa o comunidad responsable" },
+  { id:"lanzamiento",  label:"¿En qué año fue lanzado?",                    tipo:"text",     placeholder:"Año de lanzamiento" },
+  { id:"tipo",         label:"¿Es propietario o de código abierto?",        tipo:"select",   opciones:["Propietario","Código abierto","Mixto"] },
+  { id:"interfaz",     label:"¿Qué tipo de interfaz usa principalmente?",   tipo:"select",   opciones:["GUI (Gráfica)","CLI (Línea de comandos)","Ambas"] },
+  { id:"dispositivos", label:"¿En qué dispositivos se usa?",                tipo:"text",     placeholder:"PC, laptop, servidor, celular…" },
+  { id:"costo",        label:"¿Tiene costo económico?",                     tipo:"select",   opciones:["Gratuito","De pago","Incluido con el hardware","Freemium"] },
+  { id:"usos",         label:"¿Para qué se usa principalmente?",            tipo:"text",     placeholder:"Hogar, empresas, programadores, servidores…" },
+  { id:"ventajas",     label:"Nombrá 2 ventajas",                           tipo:"textarea", placeholder:"1.\n2." },
+  { id:"desventajas",  label:"Nombrá 2 desventajas",                        tipo:"textarea", placeholder:"1.\n2." },
+  { id:"curiosidad",   label:"¿Encontraste alguna curiosidad interesante?", tipo:"textarea", placeholder:"Contá algo que te haya llamado la atención…" },
+];
 
-// Detect which slide is visible via IntersectionObserver
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const idx = Array.from(allSlides).indexOf(e.target);
-      updateUI(idx);
-    }
+const GUIA = {
+  empresa: {
+    titulo:"¿Quién lo desarrolló?",
+    explicacion:"Querés saber si fue creado por una empresa privada (como Microsoft o Apple) o por una comunidad de personas voluntarias (como ocurre con la mayoría de los sistemas Linux).",
+    comoBuscar:["Buscá en Wikipedia: mirá el recuadro lateral derecho, que dice 'Desarrollador'.","En el sitio oficial del SO siempre aparece quién lo creó en la sección 'About' o 'Acerca de'."],
+    ejemplos:["Microsoft Corporation → Windows","Comunidad de voluntarios → Debian","Canonical Ltd. → Ubuntu","Apple Inc. → macOS"],
+    error:"No confundas quien lo distribuye con quien lo desarrolló. Google distribuye Android, pero el núcleo Linux lo inició Linus Torvalds.",
+  },
+  lanzamiento: {
+    titulo:"¿En qué año fue lanzado?",
+    explicacion:"Queremos saber cuándo salió al público por primera vez. Algunos SO tienen versiones muy nuevas pero su historia empezó hace décadas.",
+    comoBuscar:["Wikipedia: buscá 'año de lanzamiento' o 'release date' en el artículo.","Si el SO tiene muchas versiones, indicá el año de la versión que elegiste investigar."],
+    ejemplos:["Windows: primera versión 1985, Windows 11 en 2021","Linux: núcleo creado en 1991","macOS: 2001 (antes llamado Mac OS X)"],
+    error:"No mezcles el año de la primera versión histórica con el año de la versión actual. Podés mencionar los dos si te parece interesante.",
+  },
+  tipo: {
+    titulo:"¿Es propietario o de código abierto?",
+    explicacion:"Un SO propietario tiene su código fuente oculto y pertenece a una empresa. Uno de código abierto tiene su código visible y cualquiera puede estudiarlo o modificarlo.",
+    comoBuscar:["Si lo hace una gran empresa y tiene licencia cerrada → probablemente propietario.","Si está en GitHub, tiene licencia GPL o MIT, o es una distribución Linux → código abierto.","Wikipedia siempre indica la licencia en el recuadro lateral."],
+    ejemplos:["Propietario: Windows, macOS, iOS, z/OS","Código abierto: Ubuntu, Fedora, FreeBSD","Mixto: Android (núcleo abierto + servicios propietarios de Google)"],
+    error:"Android es un caso especial: el núcleo es código abierto (AOSP), pero Google agrega servicios propietarios encima. Podés indicarlo como 'mixto'.",
+  },
+  interfaz: {
+    titulo:"¿Qué tipo de interfaz usa?",
+    explicacion:"La GUI (Graphical User Interface) usa ventanas, íconos y el mouse. La CLI (Command Line Interface) usa texto y comandos escritos. Muchos SO admiten los dos modos.",
+    comoBuscar:["Buscá imágenes del SO en Google: ¿ves ventanas y gráficos, o solo texto?","Buscá en YouTube 'demo de [nombre del SO]' para verlo en acción."],
+    ejemplos:["GUI: Windows, macOS, Ubuntu (escritorio GNOME)","CLI: MS-DOS, Alpine Linux, FreeBSD (modo texto)","Ambas: Kali Linux, Debian, Ubuntu Server"],
+    error:"Muchos SO de código abierto pueden funcionar con o sin interfaz gráfica. Si admite los dos modos, escribí 'Ambas'.",
+  },
+  dispositivos: {
+    titulo:"¿En qué dispositivos se usa?",
+    explicacion:"Los SO no solo van en computadoras. Algunos están pensados para celulares, otros para servidores, y algunos hasta para sistemas de naves espaciales o autos.",
+    comoBuscar:["Buscá 'compatible con' o 'plataformas' en el artículo de Wikipedia.","Pensá: ¿dónde viste o usaste este SO alguna vez?"],
+    ejemplos:["PC y laptop: Windows, macOS, Ubuntu","Celulares: Android, iOS","Servidores: CentOS, Debian, z/OS","Sistemas embebidos (aviones, autos): QNX, VxWorks"],
+    error:"No todos los SO sirven para todo. Un SO de servidor como z/OS no está diseñado para una PC hogareña.",
+  },
+  costo: {
+    titulo:"¿Tiene costo económico?",
+    explicacion:"Queremos saber si hay que pagarlo para usarlo legalmente. Gratuito = no cuesta dinero. De pago = hay que comprarlo o pagar una licencia.",
+    comoBuscar:["Buscá el sitio oficial y mirá si hay opción de compra o descarga gratuita.","Wikipedia menciona el tipo de licencia: GPL/MIT = generalmente gratis; EULA = generalmente pago."],
+    ejemplos:["Gratuito: Ubuntu, Fedora, FreeBSD, Android (AOSP)","De pago: Windows (licencia)","Incluido con el hardware: macOS (solo en equipos Apple)"],
+    error:"macOS es 'gratis' como actualización, pero solo funciona en hardware Apple que ya pagaste. Podés indicarlo como 'incluido con el hardware'.",
+  },
+  usos: {
+    titulo:"¿Para qué se usa principalmente?",
+    explicacion:"Cada SO fue diseñado pensando en un tipo de usuario o tarea. Algunos son para uso hogareño, otros para programadores, y otros para grandes servidores empresariales.",
+    comoBuscar:["Buscá 'para qué se usa [nombre del SO]' o 'usos de [nombre del SO]'.","Pensá: ¿quiénes lo usan? ¿Personas en casa, empresas, hospitales, científicos?"],
+    ejemplos:["Hogar y oficina: Windows, macOS","Programadores: Ubuntu, Arch Linux","Seguridad informática: Kali Linux, Tails OS","Servidores web: Debian, CentOS","Sistemas críticos: QNX, VxWorks"],
+    error:"Un SO puede tener varios usos. No hay una sola respuesta correcta — identificá para qué está principalmente pensado.",
+  },
+  ventajas: {
+    titulo:"2 ventajas del SO",
+    explicacion:"Las ventajas son las cosas positivas que tiene este SO comparado con otros. Pensá: ¿por qué alguien elegiría usarlo?",
+    comoBuscar:["Buscá 'ventajas de [nombre del SO]' o 'pros and cons [nombre del SO]'.","Pensá en: facilidad de uso, seguridad, velocidad, costo, compatibilidad, privacidad."],
+    ejemplos:["Windows: amplia compatibilidad con programas y juegos / interfaz familiar para la mayoría","Ubuntu: gratuito y seguro / no necesita antivirus habitualmente","macOS: diseño elegante / muy estable y optimizado para hardware Apple"],
+    error:"Evitá ventajas muy genéricas como 'es bueno' o 'funciona bien'. Intentá ser más específico/a.",
+  },
+  desventajas: {
+    titulo:"2 desventajas del SO",
+    explicacion:"Las desventajas son las limitaciones o problemas que tiene. Ningún SO es perfecto — todos tienen aspectos que se pueden mejorar.",
+    comoBuscar:["Buscá 'desventajas de [nombre del SO]' o 'problemas con [nombre del SO]'.","Pensá en: precio, compatibilidad, dificultad de uso, privacidad, soporte técnico."],
+    ejemplos:["Windows: más vulnerable a virus / costo de licencia","Linux en general: curva de aprendizaje / no todos los programas comerciales son compatibles","macOS: solo funciona en hardware Apple / precio elevado del hardware"],
+    error:"No confundas opiniones personales con desventajas reales. 'No me gusta cómo se ve' no es una desventaja técnica válida.",
+  },
+  curiosidad: {
+    titulo:"Una curiosidad interesante",
+    explicacion:"Esta es la parte más libre. Buscá algo que te haya sorprendido, que sea poco conocido, o que haga especial a este SO.",
+    comoBuscar:["Buscá 'datos curiosos sobre [nombre del SO]' o 'fun facts [nombre del SO]'.","Revisá la sección 'Historia' en Wikipedia — ahí suelen aparecer anécdotas.","Buscá quién lo creó y su historia personal — muchas veces son historias fascinantes."],
+    ejemplos:["Linux fue creado por Linus Torvalds cuando era estudiante universitario, en 1991.","El nombre 'Windows' viene de las ventanas que aparecen en pantalla.","QNX se usó en la sonda espacial Dawn de la NASA.","El primer virus informático de la historia atacó a MS-DOS."],
+    error:"No hay respuesta incorrecta aquí. Lo único importante es que sea algo real que encontraste en tu investigación.",
+  },
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+
+let currentSO   = null;
+let prevScreen  = "elegir";
+let currentFilt = "todos";
+let respuestas  = {};
+
+// ─── RENDER SO GRID ──────────────────────────────────────────────────────────
+
+function renderGrid() {
+  const busq = document.getElementById("search-input").value.toLowerCase();
+  const grid = document.getElementById("so-grid");
+  const filtered = SISTEMAS.filter(s => {
+    const mB = s.nombre.toLowerCase().includes(busq) || s.empresa.toLowerCase().includes(busq);
+    const mF = currentFilt === "todos" || s.cat === currentFilt;
+    return mB && mF;
   });
-}, { root: slidesEl, threshold: 0.55 });
+  document.getElementById("count-label").textContent = filtered.length + " sistemas disponibles";
+  grid.innerHTML = filtered.map(s => `
+    <div class="so-card ${s.cat === 'propietario' ? 'prop' : 'open'}" onclick="selectSO('${s.nombre}')">
+      <div class="so-icon">${s.icono}</div>
+      <div class="so-name">${s.nombre}</div>
+      <div class="so-meta">${s.empresa} · ${s.año}</div>
+      <span class="badge ${s.cat === 'propietario' ? 'badge-prop' : 'badge-open'}">
+        ${s.cat === 'propietario' ? '🔒 Propietario' : '🌿 Abierto'}
+      </span>
+    </div>
+  `).join("");
+}
 
-allSlides.forEach(s => observer.observe(s));
+function filterSO()          { renderGrid(); }
+function setFilter(f) {
+  currentFilt = f;
+  ["todos","propietario","abierto"].forEach(id => {
+    document.getElementById("filt-" + id).classList.toggle("active", id === f);
+  });
+  renderGrid();
+}
 
-// Keyboard nav
-document.addEventListener("keydown", e => {
-  if (e.key === "ArrowDown" || e.key === " ") { e.preventDefault(); goTo(Math.min(current + 1, total - 1)); }
-  if (e.key === "ArrowUp")                     { e.preventDefault(); goTo(Math.max(current - 1, 0)); }
-});
+// ─── SELECT SO → GO INVESTIGAR ───────────────────────────────────────────────
 
-// Touch swipe (vertical)
-let touchY = 0;
-slidesEl.addEventListener("touchstart", e => { touchY = e.touches[0].clientY; }, { passive: true });
-slidesEl.addEventListener("touchend",   e => {
-  const diff = touchY - e.changedTouches[0].clientY;
-  if (Math.abs(diff) > 40) {
-    if (diff > 0) goTo(Math.min(current + 1, total - 1));
-    else          goTo(Math.max(current - 1, 0));
+function selectSO(nombre) {
+  currentSO  = SISTEMAS.find(s => s.nombre === nombre);
+  respuestas = {};
+  prevScreen = "elegir";
+
+  // Header title
+  document.getElementById("inv-title").textContent = currentSO.icono + " " + currentSO.nombre;
+
+  // Selected card
+  document.getElementById("so-selected-card").innerHTML = `
+    <div class="big-icon">${currentSO.icono}</div>
+    <div>
+      <h3>${currentSO.nombre}</h3>
+      <p>Desarrollado por ${currentSO.empresa} · Lanzado en ${currentSO.año}</p>
+      <span class="badge ${currentSO.cat === 'propietario' ? 'badge-prop' : 'badge-open'}">
+        ${currentSO.cat === 'propietario' ? '🔒 PROPIETARIO' : '🌿 CÓDIGO ABIERTO'}
+      </span>
+    </div>
+  `;
+
+  buildQuestions();
+  updateProgress();
+  showScreen("investigar");
+}
+
+// ─── BUILD QUESTION LIST ──────────────────────────────────────────────────────
+
+function buildQuestions() {
+  const list = document.getElementById("q-list");
+  list.innerHTML = PREGUNTAS.map((p, i) => {
+    let field = "";
+    if (p.tipo === "text") {
+      field = `<input class="q-input" id="f-${p.id}" type="text" placeholder="${p.placeholder}" oninput="saveAnswer('${p.id}', this.value)">`;
+    } else if (p.tipo === "select") {
+      const opts = p.opciones.map(o => `<option value="${o}">${o}</option>`).join("");
+      field = `<select class="q-select" id="f-${p.id}" onchange="saveAnswer('${p.id}', this.value)"><option value="">— Elegí una opción —</option>${opts}</select>`;
+    } else {
+      field = `<textarea class="q-textarea" id="f-${p.id}" placeholder="${p.placeholder}" oninput="saveAnswer('${p.id}', this.value)" rows="3"></textarea>`;
+    }
+    return `
+      <div class="q-card" id="qcard-${p.id}">
+        <div class="q-header">
+          <label class="q-label" id="qlabel-${p.id}">
+            <span class="q-num">${i+1}</span>${p.label}<span class="check-ok" id="check-${p.id}" style="display:none">✓</span>
+          </label>
+          <button class="btn-help" onclick="openModal('${p.id}')">? Ayuda</button>
+        </div>
+        ${field}
+      </div>
+    `;
+  }).join("");
+}
+
+function saveAnswer(id, val) {
+  respuestas[id] = val;
+  const done = val.trim().length > 0;
+  document.getElementById("qcard-"  + id).classList.toggle("done", done);
+  document.getElementById("qlabel-" + id).classList.toggle("done", done);
+  document.getElementById("check-"  + id).style.display = done ? "inline" : "none";
+  updateProgress();
+}
+
+function updateProgress() {
+  const total     = PREGUNTAS.length;
+  const completed = PREGUNTAS.filter(p => respuestas[p.id]?.trim()).length;
+  const pct       = Math.round((completed / total) * 100);
+
+  document.getElementById("progress-fill").style.width  = pct + "%";
+  document.getElementById("progress-label").textContent = pct + "% completado";
+
+  const btn = document.getElementById("btn-siguiente");
+  if (completed >= 6) {
+    btn.disabled = false;
+    btn.className = "btn btn-cyan btn-full";
+    btn.textContent = "✅ Ver mi ficha de investigación →";
+  } else {
+    btn.disabled = true;
+    btn.className = "btn btn-full";
+    btn.style.cursor = "not-allowed";
+    btn.style.background = "var(--card)";
+    btn.style.color = "var(--gray)";
+    btn.textContent = `Completá al menos 6 preguntas para continuar (${completed}/${total})`;
   }
-}, { passive: true });
+}
+
+// ─── GO REVISAR ───────────────────────────────────────────────────────────────
+
+function goRevisar() {
+  const completed = PREGUNTAS.filter(p => respuestas[p.id]?.trim()).length;
+
+  // Build result header
+  const headerBg = currentSO.cat === "propietario" ? "rgba(255,122,53,.15)" : "rgba(0,229,160,.15)";
+  const badgeClass = currentSO.cat === "propietario" ? "badge-prop" : "badge-open";
+  document.getElementById("result-header").style.background = headerBg;
+  document.getElementById("result-header").innerHTML = `
+    <div>
+      <div class="result-eyebrow">Ficha de Investigación</div>
+      <h3>${currentSO.icono} ${currentSO.nombre}</h3>
+    </div>
+    <span class="badge ${badgeClass}">${currentSO.cat === "propietario" ? "PROPIETARIO" : "CÓDIGO ABIERTO"}</span>
+  `;
+  document.getElementById("rev-title").textContent = currentSO.icono + " " + currentSO.nombre;
+
+  // Build result rows
+  const rows = PREGUNTAS.map(p => {
+    const ans = respuestas[p.id]?.trim() || "";
+    return `
+      <div class="result-row">
+        <div class="result-qlabel">${p.label}</div>
+        <div class="result-answer ${ans ? "" : "empty"}">${ans || "Sin respuesta"}</div>
+      </div>
+    `;
+  }).join("");
+
+  const msg = completed === PREGUNTAS.length
+    ? "🌟 ¡Investigación completa! Estás listo/a para exponer."
+    : completed >= 7
+    ? "✅ ¡Muy bien! Podés agregar más detalles."
+    : "📝 Seguí investigando para completar la ficha.";
+
+  const editBtn = completed < PREGUNTAS.length
+    ? `<button class="btn btn-outline-purple" style="margin-top:11px" onclick="showScreen('investigar')">✏️ Seguir completando</button>`
+    : "";
+
+  document.getElementById("result-body").innerHTML = rows + `
+    <div class="score-box">
+      <div class="score-num">${completed}/${PREGUNTAS.length}</div>
+      <div class="score-sub">preguntas completadas</div>
+      <div class="score-msg">${msg}</div>
+      ${editBtn}
+    </div>
+  `;
+
+  showScreen("revisar");
+}
+
+// ─── GO ELEGIR ────────────────────────────────────────────────────────────────
+
+function goElegir() {
+  currentSO  = null;
+  respuestas = {};
+  showScreen("elegir");
+}
+
+// ─── GUÍA ─────────────────────────────────────────────────────────────────────
+
+function showGuia() {
+  const active = document.querySelector(".screen.active");
+  prevScreen   = active ? active.id.replace("screen-", "") : "elegir";
+  showScreen("guia");
+}
+function volverdesdeguia() { showScreen(prevScreen); }
+
+// ─── SCREEN SWITCH ────────────────────────────────────────────────────────────
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-" + id).classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+
+function openModal(id) {
+  const g = GUIA[id];
+  if (!g) return;
+  document.getElementById("modal-title").textContent = g.titulo;
+
+  const examples = g.ejemplos.map(e => `<div class="example-row">${e}</div>`).join("");
+  const tips     = g.comoBuscar.map(t => `<li>${t}</li>`).join("");
+
+  document.getElementById("modal-body").innerHTML = `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:var(--cyan)">🎯 ¿Qué significa esta pregunta?</div>
+      <p>${g.explicacion}</p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:var(--purple)">🔍 ¿Cómo puedo encontrar esta información?</div>
+      <ul>${tips}</ul>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:var(--green)">💡 Ejemplos de respuestas posibles</div>
+      ${examples}
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:var(--orange)">⚠️ Error frecuente a evitar</div>
+      <div class="error-box"><p>${g.error}</p></div>
+    </div>
+  `;
+
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById("modal-overlay")) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById("modal-overlay").classList.remove("open");
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+renderGrid();
 </script>
 </body>
 </html>
